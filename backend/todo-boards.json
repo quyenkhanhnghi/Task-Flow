@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Todo Board 1",
+    "status": "todo",
+    "image": "todo-board-image-url-1"
+  },
+  {
+    "title": "Todo Board 2",
+    "status": "inprogress",
+    "image": "todo-board-image-url-2"
+  },
+  {
+    "title": "Todo Board 3",
+    "status": "done",
+    "image": "todo-board-image-url-3"
+  }
+]

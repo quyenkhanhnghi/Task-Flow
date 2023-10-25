@@ -1,9 +1,12 @@
 "use client";
 import { useBoardStore } from "@/context/BoardStore";
-import { TypeCol, Col } from "../type";
+import { Col } from "../type";
 import React, { useEffect } from "react";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import Column from "./Column";
+import { io } from "socket.io-client";
+
+const socket_connection = io("http://localhost:4000");
 
 function Board() {
   const [board, getBoard, setBoard] = useBoardStore((state) => [
@@ -11,6 +14,7 @@ function Board() {
     state.getBoard,
     state.setBoard,
   ]);
+
   useEffect(() => {
     getBoard();
   }, [getBoard]);
@@ -60,7 +64,9 @@ function Board() {
       };
       const newCols = new Map(board.columns);
       newCols.set(startCol.id, newCol);
-      // update tODO IN DATABASE also - use websocket
+      // TODO: websocket connection
+
+      // update TODO IN DATABASE also - use websocket
       setBoard({ ...board, columns: newCols });
       // drop in diff col
     } else {
@@ -84,7 +90,7 @@ function Board() {
       <Droppable droppableId="board" direction="horizontal" type="column">
         {(provided) => (
           <div
-            className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-7xl mx-auto
+            className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-7xl mx-auto pt-5
           "
             {...provided.droppableProps}
             ref={provided.innerRef}

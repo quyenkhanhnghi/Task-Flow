@@ -2,6 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import MyDialog from "../components/Dialog";
+import { ProviderSession } from "@/context/SessionProvider";
+import { InitializeSocketConnection } from "@/hooks/InitializeSocketConnection";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,11 +18,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-[#F5F6F8]">
-        {children}
-        <MyDialog />
-      </body>
-    </html>
+    <>
+      <InitializeSocketConnection />
+      <html lang="en">
+        <body className="bg-body-secondary-bg">
+          <ProviderSession>
+            {children}
+            <MyDialog />
+          </ProviderSession>
+        </body>
+      </html>
+    </>
   );
 }

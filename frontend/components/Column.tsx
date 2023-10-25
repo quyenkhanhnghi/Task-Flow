@@ -4,7 +4,6 @@ import ToDoCard from "./ToDoCard";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useBoardStore } from "@/context/BoardStore";
 import { useDialogContext } from "@/context/DialogContext";
-import MyDialog from "./Dialog";
 
 type ColumnProps = {
   id: TypeCol;

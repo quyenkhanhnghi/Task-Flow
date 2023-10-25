@@ -1,8 +1,8 @@
-import { getAllBoard } from "../controllers/boardControler";
-import express from "express";
+import express from 'express';
+import { getAllBoard } from '../controllers/boardController';
 
 const boardRouter = express.Router();
 
-boardRouter.get("/", getAllBoard);
+boardRouter.get('/', getAllBoard);
 
 export { boardRouter };

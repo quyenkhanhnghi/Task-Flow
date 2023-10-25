@@ -1,7 +1,7 @@
-import express from "express";
-import { boardRouter } from "./routes/boardRouter";
-import { allowedOrigins, credentials } from "./utils/credentials";
-import cors from "cors";
+import express from 'express';
+import { boardRouter } from './routes/boardRouter';
+import { allowedOrigins, credentials } from './utils/credentials';
+import cors from 'cors';
 
 const app = express();
 // Handle options credentials check - before CORS!
@@ -13,6 +13,6 @@ const corsOptions: cors.CorsOptions = {
 };
 // Cross Origin Resource Sharing
 app.use(cors(corsOptions));
-app.use("/boards", boardRouter);
+app.use('/boards', boardRouter);
 
 export { app };

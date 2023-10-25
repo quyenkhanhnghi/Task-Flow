@@ -1,0 +1,80 @@
+@tailwind components;
+
+@layer components {
+  .AppHeader {
+    @apply block bg-body-main-bg border-b-2 border-gray-icon;
+  }
+
+  .AppHeader-globalBar {
+    @apply flex p-4 gap-3;
+  }
+
+  .AppHeader-globalBar-start {
+    @apply flex flex-1 gap-2;
+  }
+
+  .AppHeader-globalBar-end {
+    @apply flex justify-end gap-2 max-h-9;
+  }
+  /** For search bar */
+  .AppHeader-search {
+    @apply relative flex flex-grow flex-shrink md:flex-initial;
+  }
+  .search-container {
+    @apply border-2 border-gray-icon rounded-md hover:border-gray-hover-border;
+  }
+  .search-icon {
+    @apply block p-1 px-1 pb-0.5 cursor-pointer;
+  }
+  /** For search input bar*/
+  .search-input {
+    @apply outline-none p-2 bg-body-main-bg text-white bg-transparent;
+  }
+  /** For notification and indicator*/
+  .AppHeader-notification {
+    @apply relative flex items-center space-x-5 flex-1;
+  }
+  .notification-icon {
+    @apply relative block p-1 px-1 pb-0.5 cursor-pointer;
+  }
+  .notification-indicator {
+    @apply absolute bg-blue-500 rounded-full w-2.5 h-2.5 -top-1 -right-1 justify-center shadow-xl border-solid;
+  }
+  /** For image usser icon */
+  .AppHeader-user {
+    @apply relative border rounded-full border-transparent h-10 w-10;
+  }
+
+  /**For image header of the AppHeader-Start*/
+  .image-header {
+    @apply w-44 md:w-56 pb-10 md:pb-0 object-contain;
+  }
+  /** For geneeral button in Header*/
+  .AppHeader-button {
+    @apply border-2 border-solid bg-transparent items-center justify-center rounded-md border-gray-icon hover:bg-gray-hover-icon hover:border-gray-hover-border transition duration-300;
+  }
+
+  /** Handle search shink responsive*/
+  @media (min-width: 1011.98px) {
+    .AppHeader-search {
+      @apply flex-grow-0;
+    }
+  }
+  @media (max-width: 1011.98px) {
+    .AppHeader
+      .AppHeader-globalBar
+      .AppHeader-search
+      .search-input
+      .AppHeader-notification {
+      @apply w-auto;
+    }
+  }
+  @media (max-width: 1011.98px) {
+    .AppHeader-search .search-input {
+      @apply hidden;
+    }
+    .AppHeader-search .search-icon {
+      @apply block;
+    }
+  }
+}

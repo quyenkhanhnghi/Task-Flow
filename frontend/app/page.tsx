@@ -3,7 +3,6 @@ import Header from "@/components/header/Header";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { options } from "./api/auth/[...nextauth]/options";
-import { io } from "socket.io-client";
 
 export default async function Home() {
   const session = await getServerSession(options);

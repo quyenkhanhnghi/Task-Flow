@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import MyDialog from "../components/Dialog";
 import { ProviderSession } from "@/context/SessionProvider";
 import { InitializeSocketConnection } from "@/hooks/InitializeSocketConnection";
+import { Snackbar } from "@/components/snackbar/Snackbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,10 +22,12 @@ export default function RootLayout({
     <>
       <InitializeSocketConnection />
       <html lang="en">
-        <body className="bg-body-secondary-bg">
+        {/* <body className="bg-body-secondary-bg"> */}
+        <body className="bg-white">
           <ProviderSession>
             {children}
             <MyDialog />
+            <Snackbar />
           </ProviderSession>
         </body>
       </html>

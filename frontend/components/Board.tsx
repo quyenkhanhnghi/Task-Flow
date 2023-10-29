@@ -1,12 +1,15 @@
 "use client";
 import { useBoardStore } from "@/context/BoardStore";
-import { Col } from "../type";
 import React, { useEffect } from "react";
-import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  DraggableLocation,
+  DropResult,
+  Droppable,
+} from "react-beautiful-dnd";
 import Column from "./Column";
-import { io } from "socket.io-client";
-
-const socket_connection = io("http://localhost:4000");
+import { useSocketStore } from "@/context/SocketStore";
+import { SocketEvents } from "@/types/sockenevent.interface";
 
 function Board() {
   const [board, getBoard, setBoard] = useBoardStore((state) => [
@@ -14,77 +17,87 @@ function Board() {
     state.getBoard,
     state.setBoard,
   ]);
+  const { socket } = useSocketStore();
 
+  // Get Board from backend
   useEffect(() => {
     getBoard();
   }, [getBoard]);
 
-  const handleOnDragEnd = (result: DropResult) => {
-    const { destination, source, type } = result;
-    // drop outside of the destination
-    if (!destination) return;
-    // handle drag column
-    if (type === "column") {
-      const entries = Array.from(board.columns.entries());
-      const [removed] = entries.splice(source.index, 1);
-      entries.splice(destination.index, 0, removed);
-      const rerangedCol = new Map(entries);
-      setBoard({ ...board, columns: rerangedCol });
-      return;
+  /** Handle Drag Column */
+  const handleDragColumn = (
+    source: DraggableLocation,
+    destination: DraggableLocation
+  ) => {
+    const newCols = [...board.columns];
+    const [removed] = newCols.splice(source.index, 1);
+    newCols.splice(destination.index, 0, removed);
+    setBoard({ ...board, columns: newCols });
+
+    if (socket) {
+      socket.emit(SocketEvents.columnsUpdate, newCols);
     }
-    // handle drag card
-    const columns = Array.from(board.columns.entries());
-    const starColIndex = columns[Number(source.droppableId)];
-    const endColIndex = columns[Number(destination.droppableId)];
-    const startCol: Col = {
-      id: starColIndex[0],
-      todos: starColIndex[1].todos,
-    };
-    const endCol: Col = {
-      id: endColIndex[0],
-      todos: endColIndex[1].todos,
-    };
-    // drop outside the boundaries
+    return;
+  };
+
+  const handleDragCard = (
+    source: DraggableLocation,
+    destination: DraggableLocation
+  ) => {
+    const newCols = [...board.columns];
+    const startCol = { ...newCols[Number(source.droppableId)] };
+    console.log(startCol);
+    const endCol = { ...newCols[Number(destination.droppableId)] };
+    console.log(endCol);
+
+    // drop card outside the boundaries
     if (!startCol || !endCol) return;
-    // drop in same postion
+
+    // drop card in same postion
     if (
       source.droppableId === destination.droppableId &&
-      startCol.id === endCol.id
-    )
+      source.index === destination.index
+    ) {
       return;
-    const newTodos = startCol.todos;
+    }
+
+    const newTodos = [...startCol.todos];
     const [todoRemoved] = newTodos.splice(source.index, 1);
 
-    // drop in same col
-    if (startCol.id === endCol.id) {
+    // drop card in the same column
+    if (startCol._id === endCol._id) {
       newTodos.splice(destination.index, 0, todoRemoved);
-      const newCol = {
-        id: startCol.id,
-        todos: newTodos,
-      };
-      const newCols = new Map(board.columns);
-      newCols.set(startCol.id, newCol);
-      // TODO: websocket connection
+      const updatedStartCol = { ...startCol, todos: newTodos };
+      newCols[Number(source.droppableId)] = updatedStartCol;
 
-      // update TODO IN DATABASE also - use websocket
-      setBoard({ ...board, columns: newCols });
-      // drop in diff col
+      // Drop card in different col
     } else {
-      const endTodosArray = Array.from(endCol.todos);
-      endTodosArray.splice(destination.index, 0, todoRemoved);
-      const newCols = new Map(board.columns);
-      const newCol = {
-        id: startCol.id,
-        todos: newTodos,
-      };
-      newCols.set(startCol.id, newCol);
-      newCols.set(endCol.id, {
-        id: endCol.id,
-        todos: endTodosArray,
-      });
-      setBoard({ ...board, columns: newCols });
+      const endTodos = [...endCol.todos];
+      endTodos.splice(destination.index, 0, todoRemoved);
+      const updatedStartCol = { ...startCol, todos: newTodos };
+      const updatedEndCol = { ...endCol, todos: endTodos };
+      newCols[Number(source.droppableId)] = updatedStartCol;
+      newCols[Number(destination.droppableId)] = updatedEndCol;
     }
+
+    setBoard({ ...board, columns: newCols });
+    socket?.emit(SocketEvents.columnsUpdate, newCols);
   };
+
+  const handleOnDragEnd = (result: DropResult) => {
+    const { destination, source, type } = result;
+
+    // Drop outside of the destination
+    if (!destination) return;
+
+    /** Handle drag column **/
+    if (type === "column") {
+      handleDragColumn(source, destination);
+      return;
+    }
+    handleDragCard(source, destination);
+  };
+
   return (
     <DragDropContext onDragEnd={handleOnDragEnd}>
       <Droppable droppableId="board" direction="horizontal" type="column">
@@ -95,9 +108,15 @@ function Board() {
             {...provided.droppableProps}
             ref={provided.innerRef}
           >
-            {Array.from(board.columns.entries()).map(([id, column], index) => (
-              <Column key={id} id={id} todos={column.todos} index={index} />
-            ))}
+            {Array.isArray(board.columns) &&
+              board.columns.map((column, index) => (
+                <Column
+                  key={column.title}
+                  id={column.title}
+                  todos={column.todos}
+                  index={index}
+                />
+              ))}
             {provided.placeholder}
           </div>
         )}

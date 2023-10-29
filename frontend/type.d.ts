@@ -1,19 +1,23 @@
 export type TypeCol = "todo" | "inprogress" | "done";
 
 interface Board {
-  columns: Map<TypeCol, Col>;
+  columns: Array<Col>;
 }
 
 interface Col {
-  id: TypeCol;
+  title: string;
+  _id: TypeCol;
   todos: Todo[];
+  color: string;
+  description: string;
 }
 
 interface Todo {
-  id: string;
+  _id: string;
+  // id: string;
   createdAt: string;
   title: string;
-  status: TypeCol;
+  // status: TypeCol;
   image?: Image;
 }
 

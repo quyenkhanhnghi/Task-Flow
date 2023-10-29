@@ -1,0 +1,49 @@
+{
+  "columns": [
+    {
+      "title": "todo",
+      "color": "#FFD580",
+      "description": "This item hasn't been started",
+      "todos": [
+        {
+          "title": "To do 1",
+          "image": "https://example.com/image1.jpg"
+        },
+        {
+          "title": "To do 2",
+          "image": "https://example.com/image1.jpg"
+        }
+      ]
+    },
+    {
+      "title": "inprogress",
+      "color": "#89CFF0",
+      "description": "This is actively being worked on",
+      "todos": [
+        {
+          "title": "To do 3",
+          "image": "https://example.com/image1.jpg"
+        },
+        {
+          "title": "To do 4",
+          "image": "https://example.com/image1.jpg"
+        }
+      ]
+    },
+    {
+      "title": "done",
+      "color": "#8FBC8F",
+      "description": "This has been completed",
+      "todos": [
+        {
+          "title": "To do 5",
+          "image": "https://example.com/image1.jpg"
+        },
+        {
+          "title": "To do 6",
+          "image": "https://example.com/image1.jpg"
+        }
+      ]
+    }
+  ]
+}

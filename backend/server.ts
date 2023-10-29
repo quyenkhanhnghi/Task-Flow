@@ -5,7 +5,8 @@ import mongoose from 'mongoose';
 import { Server, Socket } from 'socket.io';
 import { app } from './app';
 import { upLoadFile, uploadImage } from './controllers/boardController';
-import boardModel from './model/boardModel';
+import Board from './model/boardModel';
+import { SocketEvents } from './types/socketevent.interface';
 
 dotenv.config({ path: './config.env' });
 
@@ -24,12 +25,25 @@ io.on('connection', (socket: Socket) => {
 
   socket.emit('message', 'Welcome to the server!');
 
-  socket.on('testMessage', (data) => {
-    console.log('Received test message:', data);
-    io.emit('message', `Message from user ${socket.id}: ${data}`);
-  });
-  socket.on('dragtask', (data) => {
+  // socket.on('testMessage', (data) => {
+  //   console.log('Received test message:', data);
+  //   io.emit('message', `Message from user ${socket.id}: ${data}`);
+  // });
+  socket.on('taskDraggedDiffCol', (data) => {
     console.log(data);
+  });
+  socket.on(SocketEvents.columnsUpdate, async (updatedCol) => {
+    try {
+      const board = await Board.findOne({});
+      // console.log(board);
+      if (board) {
+        board.columns = updatedCol;
+        board.save();
+        console.log('Updated board');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   });
   socket.on('disconnect', () => {
     console.log('A user disconnected');
@@ -40,7 +54,7 @@ io.on('connection', (socket: Socket) => {
 app.post('/api/posts', upLoadFile, uploadImage);
 // read Json file
 const boards = JSON.parse(
-  fs.readFileSync(`${__dirname}/todo-boards.json`, 'utf-8'),
+  fs.readFileSync(`${__dirname}/mock-data.json`, 'utf-8'),
 );
 mongoose.connect(process.env.MONGO_URL!).then(() => {
   console.log('hi from mongodb');
@@ -49,8 +63,17 @@ mongoose.connect(process.env.MONGO_URL!).then(() => {
 // import data into db
 const importData = async () => {
   try {
-    await boardModel.create(boards);
+    await Board.create(boards);
     console.log('Data imported');
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const deleteData = async () => {
+  try {
+    await Board.deleteMany();
+    console.log('Data deleted');
   } catch (err) {
     console.log(err);
   }
@@ -58,6 +81,9 @@ const importData = async () => {
 
 if (process.argv[2] === '--import') {
   importData();
+}
+if (process.argv[2] === '--delete') {
+  deleteData();
 }
 
 httpServer.listen(4000, () => {

@@ -5,7 +5,8 @@
   "main": "app.ts",
   "scripts": {
     "start": "nodemon server.ts",
-    "import-data": "node server.ts --import",
+    "import-data": "ts-node server.ts --import",
+    "delete-data": "ts-node server.ts --delete",
     "kill": "kill -9 $(lsof -ti:4000)"
   },
   "author": "",

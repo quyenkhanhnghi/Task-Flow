@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import boardModel from '../model/boardModel';
+import Board from '../model/boardModel';
 import s3 from '../config/aws.config';
 import multer from 'multer';
 import path from 'path';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { Server, Socket } from 'socket.io';
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -17,7 +18,7 @@ export const getAllBoard = async (
   try {
     // TODO: late find by user id -
 
-    const boards = await boardModel.find({});
+    const boards = await Board.find({});
     res.status(200).json({
       status: 'success',
       length: boards.length,
@@ -31,7 +32,16 @@ export const createBoard = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const newBoard = await boardModel.create({});
+  const newBoard = await Board.create({});
+};
+
+export const updateColumn = async (
+  io: Server,
+  socket: Socket,
+  data: { boardId: string; columnId: string; fields: { title: string } },
+) => {
+  try {
+  } catch (error) {}
 };
 
 export const uploadImage = async (

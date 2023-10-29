@@ -2,16 +2,37 @@
   {
     "title": "Todo Board 1",
     "status": "todo",
-    "image": "todo-board-image-url-1"
+    "image": "todo-board-image-url-1",
+    "position": 0
   },
   {
     "title": "Todo Board 2",
-    "status": "inprogress",
-    "image": "todo-board-image-url-2"
+    "status": "todo",
+    "image": "todo-board-image-url-1",
+    "position": 1
   },
   {
     "title": "Todo Board 3",
+    "status": "inprogress",
+    "image": "todo-board-image-url-2",
+    "position": 0
+  },
+  {
+    "title": "Todo Board 4",
+    "status": "inprogress",
+    "image": "todo-board-image-url-2",
+    "position": 1
+  },
+  {
+    "title": "Todo Board 5",
     "status": "done",
-    "image": "todo-board-image-url-3"
+    "image": "todo-board-image-url-3",
+    "position": 0
+  },
+  {
+    "title": "Todo Board 5",
+    "status": "done",
+    "image": "todo-board-image-url-3",
+    "position": 0
   }
 ]

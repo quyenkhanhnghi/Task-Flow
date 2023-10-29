@@ -13,18 +13,20 @@ function MyDialog() {
     state.isOpen,
     state.closeModal,
   ]);
-  let [newTaskInput, setNewTaskInput, image, setImage] = useBoardStore(
-    (state) => [
-      state.newTaskInput,
-      state.setNewTaskInput,
-      state.image,
-      state.setImage,
-    ]
-  );
+  const {
+    newTaskInput,
+    setNewTaskInput,
+    newTaskType,
+    image,
+    setImage,
+    addTask,
+  } = useBoardStore();
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newTaskInput) return;
     // ask task to board
+    addTask(newTaskInput, newTaskType, image);
     setImage(null);
     closeModal();
   };

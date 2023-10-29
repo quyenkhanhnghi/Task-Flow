@@ -1,5 +1,5 @@
 import { getTodobyCols } from "@/utils/getToDobyCols";
-import { Board, TypeCol, Col } from "../type";
+import { Board, TypeCol, Col, Todo } from "../type";
 import { create } from "zustand";
 import Image from "next/image";
 
@@ -20,7 +20,7 @@ interface BoardStore {
 
 export const useBoardStore = create<BoardStore>((set) => ({
   board: {
-    columns: new Map<TypeCol, Col>(),
+    columns: new Array<Col>(),
   },
   getBoard: async () => {
     const board = await getTodobyCols();
@@ -43,6 +43,23 @@ export const useBoardStore = create<BoardStore>((set) => ({
     // }
     // TODO: await database to create docucments
 
+    set((state) => {
+      const newCols = [...state.board.columns];
+      const newTodo: Todo = {
+        createdAt: new Date().toISOString(),
+        title: state.newTaskInput,
+        image: image,
+      };
+      const columnHasNewTask = newCols.find(
+        (column) => column.title === state.newTaskType
+      );
+
+      // if (!ColumnHasNewTask) {
+      //   newCols.push({ title: state.newTaskInput, image: state.newTaskInput});
+      // }
+      columnHasNewTask?.todos.push(newTodo);
+      return { ...state, board: { ...state.board, columns: newCols } };
+    });
     set({ newTaskInput: "" });
   },
 }));

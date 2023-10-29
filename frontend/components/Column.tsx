@@ -34,11 +34,11 @@ function Column({ id, todos, index }: ColumnProps) {
               <div
                 {...provided.droppableProps}
                 ref={provided.innerRef}
-                className={` p-2 rounded-2xl shadow-sm ${
-                  snapshot.isDraggingOver ? "bg-green-200" : "bg-white/50"
+                className={` p-2 rounded-2xl shadow-sm border-[2px] border-black-950 ${
+                  snapshot.isDraggingOver ? "bg-green-200" : "bg-white"
                 }`}
               >
-                <h2 className="flex justify-between font-bold text-xl p-2">
+                <h2 className="flex justify-between font-bold text-xl p-3">
                   {idColumnType[id]}
                   <span className="text-gray-500 rounded-full bg-gray-200 px-2 py-1 text-sm font-normal">
                     {!searchString
@@ -51,21 +51,19 @@ function Column({ id, todos, index }: ColumnProps) {
                   </span>
                 </h2>
 
-                <div className="flex flex-col gap-1">
-                  {todos.map((todo, index) => {
-                    if (
-                      searchString &&
-                      !todo.title
-                        .toLowerCase()
-                        .includes(searchString.toLowerCase())
-                    ) {
-                      return null;
-                    }
-
-                    return (
+                <div className="flex flex-col gap-4 pr-11">
+                  {todos
+                    .filter(
+                      (todo) =>
+                        !searchString ||
+                        todo.title
+                          .toLowerCase()
+                          .includes(searchString.toLowerCase())
+                    )
+                    .map((todo, index) => (
                       <Draggable
-                        key={todo.id}
-                        draggableId={todo.id}
+                        key={todo._id}
+                        draggableId={todo._id}
                         index={index}
                       >
                         {(provided) => (
@@ -79,19 +77,17 @@ function Column({ id, todos, index }: ColumnProps) {
                           />
                         )}
                       </Draggable>
-                    );
-                  })}
+                    ))}
 
                   {provided.placeholder}
-
-                  <div className="flex justify-end p-2">
-                    <button
-                      onClick={openModal}
-                      className="text-gray-400 hover:text-gray-700"
-                    >
-                      <AddCircleIcon className="w-90 h-90" />
-                    </button>
-                  </div>
+                </div>
+                <div className="flex justify-end mt-8 p-3">
+                  <button
+                    onClick={openModal}
+                    className="text-gray-400 hover:text-gray-700"
+                  >
+                    <AddCircleIcon className="w-90 h-90" />
+                  </button>
                 </div>
               </div>
             )}
